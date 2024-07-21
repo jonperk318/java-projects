@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
+    
     public static void main(String[] args) throws FileNotFoundException {
 
         // INITIAL TEST
@@ -17,17 +18,18 @@ public class Main {
             test.insert(testArr[i], testArrData[i]);
         }
         System.out.println();
-        System.out.print("Inorder traversal of test BST: ");
+        System.out.print("Inorder traversal of test BST:\t\t\t\t\t\t\t");
         test.inorder(); // print sorted testArr
         System.out.println();
 
-        System.out.print("Searching for data from key 5 in test BST: ");
+        System.out.print("Searching for data from key 5 in test BST:\t\t\t\t");
         test.search(5);
 
         System.out.println();
-        System.out.print("Inorder traversal of test BST after deleting key 5: ");
+        System.out.print("Inorder traversal of test BST after deleting key 5:\t\t");
         test.delete(5);
         test.inorder();
+        System.out.println();
         System.out.println();
 
 
@@ -40,7 +42,20 @@ public class Main {
         ArrayList<Long> keyInput = new ArrayList<>();
         ArrayList<String> dataInput = new ArrayList<>();
 
-        readInput input = new readInput(sc, keyInput, dataInput);
+        while (sc.hasNextLine()) { // read input.dat line by line
+
+            String line = sc.nextLine();
+            String[] splitLine = line.split(",", 2); // key before first comma, data after
+            String data;
+            if (String.valueOf(splitLine[1].charAt(0)).equals(",")) { // remove commas at the beginning of sentences
+                data = splitLine[1].substring(1);
+            }
+            else {
+                data = splitLine[1].replaceFirst(",", ", ");
+            }
+            keyInput.add(Long.parseLong(splitLine[0]));
+            dataInput.add(data);
+        }
 
         Collections.shuffle(keyInput, new Random(0)); // shuffle so input is not sorted
         Collections.shuffle(dataInput, new Random(0));
@@ -57,8 +72,9 @@ public class Main {
         System.out.println();
          */
 
-        System.out.print("Searching for data from key 161 in BST: ");
+        System.out.print("Searching for data from key 161 in BST:\t\t\t\t\t");
         tree.search(161);
+        System.out.println();
         System.out.println();
 
         // read test keys from input file
@@ -67,22 +83,7 @@ public class Main {
         ArrayList<String> testDataInput = new ArrayList<>();
         sc = new Scanner(new File("input.dat"));
 
-        readInput testInput = new readInput(sc, testKeyInput, testDataInput);
-
-        //for (int i = 0; i < testKeyInput.size(); i++) {}
-    }
-
-    public static class readInput {
-       Scanner sc;
-       ArrayList<Long> keyInput = new ArrayList<>();
-       ArrayList<String> dataInput = new ArrayList<>();
-       public readInput(Scanner sc, ArrayList<Long> keyInput, ArrayList<String> dataInput) {
-           this.sc = sc;
-           this.keyInput = keyInput;
-           this.dataInput = dataInput;
-       }
-
-       while (sc.hasNextLine()) { // read input.dat line by line
+        while (sc.hasNextLine()) { // read input.dat line by line
 
             String line = sc.nextLine();
             String[] splitLine = line.split(",", 2); // key before first comma, data after
@@ -93,8 +94,27 @@ public class Main {
             else {
                 data = splitLine[1].replaceFirst(",", ", ");
             }
-            keyInput.add(Long.parseLong(splitLine[0]));
-            dataInput.add(data);
+            testKeyInput.add(Long.parseLong(splitLine[0]));
+            testDataInput.add(data);
         }
+
+        ArrayList<Double> times = new ArrayList<>();
+        double tick, tock;
+
+        for (int i = 0; i < testKeyInput.size(); i++) {
+
+            System.out.println("Test " + (i + 1) + " expected:\t" + testKeyInput.get(i) + " : " + testDataInput.get(i));
+            System.out.print("Test " + (i + 1) + " actual:\t\t");
+            tick = System.nanoTime();
+            tree.search(testKeyInput.get(i));
+            tock = System.nanoTime();
+            System.out.println();
+            times.add((tock - tick) / 1_000_000_000);
+
+        }
+
+        System.out.println();
+        for (int i = 0; i < times.size(); i++) System.out.print("Test " + i + ":  " + times.get(i) + " seconds\n");
+        System.out.println();
     }
 }

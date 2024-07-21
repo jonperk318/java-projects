@@ -105,7 +105,7 @@ public class BinarySearchTree {
 
     public void search(long key) { // call searchRecursive()
         Node result = searchRecursive(root, key);
-        System.out.print(result.data);
+        System.out.print(key + " : " + result.data);
     }
 
     private Node searchRecursive(Node root, long key) {
